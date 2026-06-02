@@ -1,0 +1,388 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme {
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui;
+  --font-display: var(--font-display), var(--font-sans), ui-sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
+}
+
+/* Custom transitions and scrollbars for high polish */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.4);
+}
+
+/* ==========================================================================
+   LIGHT THEME DESIGN OVERRIDES
+   ========================================================================== */
+.light, .light body {
+  background-color: #F3F4F6 !important;
+  color: #1F2937 !important;
+}
+
+.light ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.light header {
+  background-color: rgba(243, 244, 246, 0.8) !important;
+  border-color: #E5E7EB !important;
+}
+
+.light blockquote, .light pre, .light code {
+  color: #111827 !important;
+}
+
+/* Overwrite main background shades */
+.light .bg-\[\#0F1113\],
+.light .bg-\[\#141618\],
+.light .bg-\[\#181A1C\],
+.light .bg-\[\#0B0C0E\],
+.light .bg-\[\#151719\],
+.light .bg-white\/5,
+.light .bg-white\/10 {
+  background-color: #FFFFFF !important;
+}
+
+.light .bg-\[\#0F1113\]\/85,
+.light .bg-\[\#0F1113\]\/80 {
+  background-color: rgba(243, 244, 246, 0.8) !important;
+}
+
+/* Deeper layouts */
+.light .bg-\[\#0B0C0E\],
+.light .bg-\[\#181A1C\],
+.light .bg-stone-900,
+.light .bg-\[\#151719\] {
+  background-color: #F9FAFB !important;
+}
+
+/* Interactive hover states */
+.light .bg-white\/5:hover,
+.light .hover\:bg-white\/10:hover,
+.light .bg-white\/10 {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Border overrides */
+.light .border-white\/10,
+.light .border-white\/5,
+.light .border-white\/20,
+.light .border-indigo-505\/10,
+.light .border-indigo-500\/10,
+.light .border-indigo-500\/20,
+.light .border-indigo-500\/30,
+.light .border-t,
+.light .border-b,
+.light .border-l,
+.light .border-r,
+.light .border {
+  border-color: #E5E7EB !important;
+}
+
+/* Neutral Text Overrides */
+.light .text-\[\#E5E7EB\],
+.light .text-white,
+.light .text-white\/90,
+.light .text-white\/85,
+.light .text-white\/80 {
+  color: #111827 !important;
+}
+
+.light .text-white\/70,
+.light .text-white\/60,
+.light .text-white\/55,
+.light .text-white\/50 {
+  color: #4B5563 !important;
+}
+
+.light .text-white\/45,
+.light .text-white\/40,
+.light .text-white\/30,
+.light .text-white\/20 {
+  color: #9CA3AF !important;
+}
+
+.light .font-display {
+  color: #111827 !important;
+}
+
+/* Keep primary buttons and accents colorful with high contrast */
+.light .bg-indigo-600 {
+  background-color: #4F46E5 !important;
+  color: #FFFFFF !important;
+}
+
+.light .bg-indigo-650 {
+  background-color: #4338CA !important;
+  color: #FFFFFF !important;
+}
+
+.light .text-indigo-400,
+.light .text-indigo-300 {
+  color: #4F46E5 !important;
+}
+
+.light .bg-indigo-500\/5,
+.light .bg-indigo-500\/15 {
+  background-color: rgba(79, 70, 229, 0.08) !important;
+}
+
+/* Emerald green state accents for correctness */
+.light .text-emerald-450,
+.light .text-emerald-400 {
+  color: #059669 !important;
+}
+
+.light .bg-emerald-500\/10,
+.light .bg-emerald-950\/40 {
+  background-color: rgba(5, 150, 105, 0.08) !important;
+}
+
+/* Warning & Error alert colors */
+.light .bg-red-950\/20,
+.light .bg-red-950\/45,
+.light .text-red-300,
+.light .text-red-400 {
+  color: #DC2626 !important;
+  background-color: rgba(220, 38, 38, 0.08) !important;
+}
+
+.light .bg-amber-950\/20,
+.light .text-amber-500,
+.light .text-amber-400 {
+  color: #D97706 !important;
+}
+
+/* Grey component corrections */
+.light .text-stone-300,
+.light .text-stone-400 {
+  color: #4B5563 !important;
+}
+.light .text-stone-700 {
+  color: #1F2937 !important;
+}
+
+.light .bg-stone-850,
+.light .bg-stone-900\/50,
+.light .bg-stone-800\/80 {
+  background-color: #F3F4F6 !important;
+  color: #1F2937 !important;
+}
+
+.light .text-slate-400 {
+  color: #6B7280 !important;
+}
+
+/* Background Gradients */
+.light .bg-gradient-to-br {
+  background-image: none !important;
+  background-color: #FFFFFF !important;
+}
+
+/* ==========================================================================
+   STUDY & ASSESSMENT LIGHT THEME CONTRAST CORRECTIONS
+   ========================================================================== */
+.light .study-assessment-container {
+  background-color: #FFFFFF !important;
+  border-color: #E5E7EB !important;
+}
+
+.light .flashcard-front {
+  background-color: #FFFFFF !important;
+  background-image: none !important;
+  border-color: #E5E7EB !important;
+}
+
+.light .flashcard-front h3 {
+  color: #111827 !important;
+}
+
+.light .flashcard-front .text-white\/40,
+.light .flashcard-front span {
+  color: #4B5563 !important;
+}
+
+.light .flashcard-back {
+  background-color: rgba(79, 70, 229, 0.05) !important;
+  border-color: rgba(79, 70, 229, 0.2) !important;
+}
+
+.light .flashcard-back p {
+  color: #1F2937 !important;
+}
+
+.light .flashcard-back span {
+  color: #4F46E5 !important;
+}
+
+.light .flashcard-back .text-white\/40 {
+  color: #4B5563 !important;
+}
+
+/* Quiz Option styling under light theme */
+.light .quiz-option {
+  background-color: #F9FAFB !important;
+  border-color: #E5E7EB !important;
+}
+
+.light .quiz-option:hover {
+  background-color: #F3F4F6 !important;
+}
+
+.light .quiz-option-text {
+  color: #1F2937 !important;
+}
+
+.light .quiz-option-badge {
+  background-color: #F3F4F6 !important;
+  border-color: #E5E7EB !important;
+  color: #4B5563 !important;
+}
+
+/* Quiz Option SELECTED state */
+.light .quiz-option.bg-indigo-950\/40 {
+  background-color: rgba(79, 70, 229, 0.08) !important;
+  border-color: #4F46E5 !important;
+}
+
+.light .quiz-option.bg-indigo-950\/40 .quiz-option-text {
+  color: #4F46E5 !important;
+  font-weight: 600 !important;
+}
+
+.light .quiz-option.bg-indigo-950\/40 .quiz-option-badge {
+  background-color: #4F46E5 !important;
+  border-color: #4F46E5 !important;
+  color: #FFFFFF !important;
+}
+
+/* Option is CORRECT after submit */
+.light .quiz-option.bg-emerald-950\/40 {
+  background-color: #ECFDF5 !important;
+  border-color: #10B981 !important;
+}
+
+.light .quiz-option.bg-emerald-950\/40 .quiz-option-text {
+  color: #065F46 !important;
+  font-weight: 700 !important;
+}
+
+.light .quiz-option.bg-emerald-950\/40 .quiz-option-badge {
+  background-color: #10B981 !important;
+  border-color: #10B981 !important;
+  color: #FFFFFF !important;
+}
+
+/* Option is WRONG after submit */
+.light .quiz-option.bg-red-950\/45 {
+  background-color: #FEF2F2 !important;
+  border-color: #EF4444 !important;
+}
+
+.light .quiz-option.bg-red-950\/45 .quiz-option-text {
+  color: #991B1B !important;
+}
+
+.light .quiz-option.bg-red-950\/45 .quiz-option-badge {
+  background-color: #EF4444 !important;
+  border-color: #EF4444 !important;
+  color: #FFFFFF !important;
+}
+
+/* Option is muted after submit */
+.light .quiz-option.opacity-40 {
+  opacity: 0.55 !important;
+  background-color: #F9FAFB !important;
+  border-color: #F3F4F6 !important;
+}
+
+.light .quiz-option.opacity-40 .quiz-option-text {
+  color: #9CA3AF !important;
+}
+
+.light .quiz-option.opacity-40 .quiz-option-badge {
+  background-color: #F3F4F6 !important;
+  border-color: #F3F4F6 !important;
+  color: #9CA3AF !important;
+}
+
+/* Feedback box contrast corrections */
+.light .quiz-feedback-box {
+  background-color: #F9FAFB !important;
+  border-color: #E5E7EB !important;
+}
+
+.light .quiz-feedback-box.bg-emerald-950\/20 {
+  background-color: #ECFDF5 !important;
+  border-color: #A7F3D0 !important;
+  color: #065F46 !important;
+}
+
+.light .quiz-feedback-box.bg-emerald-950\/20 div {
+  color: #065F46 !important;
+}
+
+.light .quiz-feedback-box.bg-red-950\/20 {
+  background-color: #FEF2F2 !important;
+  border-color: #FCA5A5 !important;
+  color: #991B1B !important;
+}
+
+.light .quiz-feedback-box.bg-red-950\/20 div {
+  color: #991B1B !important;
+}
+
+/* Inactive LEDs border override in light theme */
+.light .border-\[\#2F3336\] {
+  border-color: #D1D5DB !important;
+}
+
+/* Interactive inactive LEDs background correction */
+.light .bg-\[\#181A1C\] {
+  background-color: #E5E7EB !important;
+}
+
+/* Footer light theme high contrast styling */
+.light footer {
+  background-color: #FFFFFF !important;
+  border-top-color: #E5E7EB !important;
+  color: #4B5563 !important;
+}
+
+.light footer span,
+.light footer div {
+  color: #374151 !important;
+}
+
+/* Info Callout and Description Light Theme Contrast Corrections */
+.light .info-callout,
+.light .info-description {
+  background-color: #F1F5F9 !important; /* Soft slate/indigo background */
+  border-color: #CBD5E1 !important; /* Medium-light gray/slate border for high definition */
+  color: #1E293B !important; /* Deep dark grey-blue text for super high legibility */
+}
+
+/* Force dark text inside light mode explanations */
+.light .info-callout *,
+.light .info-description * {
+  color: #0F172A !important; /* Near black color for perfect readability */
+}
+
+.light .text-indigo-300\/80 {
+  color: #312E81 !important; /* Rich deep indigo-900 in light mode */
+}
+
+
+

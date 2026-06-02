@@ -1,0 +1,6 @@
+{
+  "name": "Gömülü Sistemler ve PIC Programlama",
+  "description": "PIC 16F84 ve PIC 16F877A mikrodenetleyicileri için interaktif animasyonlar, kod simülatörü, gelişmiş görsel şemalar ve ders notları platformu.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
