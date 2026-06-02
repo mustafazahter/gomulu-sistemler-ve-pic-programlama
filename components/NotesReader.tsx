@@ -5,6 +5,128 @@ import { LECTURE_NOTES, Chapter } from "@/data/notes";
 import { BookOpen, Search, CheckCircle, ChevronRight, Copy, Check, Info } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
+const renderContent = (content: string) => {
+  const lines = content.split('\n');
+  const renderedElements = [];
+  let currentTableLines: string[] = [];
+  let paragraphAccumulator: string[] = [];
+
+  const flushParagraphs = (key: string) => {
+    if (paragraphAccumulator.length > 0) {
+      const text = paragraphAccumulator.join('\n');
+      renderedElements.push(
+        <div key={key} className="text-[13px] leading-relaxed text-white/70 space-y-2 prose-invert my-2">
+          {text.split("\n\n").map((paragraph, pIdx) => {
+            if (paragraph.trim().startsWith("•")) {
+              return (
+                <ul key={pIdx} className="list-disc pl-5 space-y-1.5 my-2">
+                  {paragraph.split("\n").map((li, liIdx) => (
+                    <li key={liIdx} className="text-[13px] text-white/70">
+                      {li.replace("•", "").trim().split("**").map((textPart, tIndex) => {
+                        return tIndex % 2 === 1 ? <strong key={tIndex} className="font-semibold text-white">{textPart}</strong> : textPart;
+                      })}
+                    </li>
+                  ))}
+                </ul>
+              );
+            }
+            return (
+              <p key={pIdx} className="my-2 whitespace-pre-line">
+                {paragraph.split("**").map((textPart, tIndex) => {
+                  return tIndex % 2 === 1 ? <strong key={tIndex} className="font-semibold text-white">{textPart}</strong> : textPart;
+                })}
+              </p>
+            );
+          })}
+        </div>
+      );
+      paragraphAccumulator = [];
+    }
+  };
+
+  const parseTable = (tableLines: string[], key: string) => {
+    if (tableLines.length < 3) return null;
+    const headers = tableLines[0].split('|').map(s => s.trim()).filter(s => s !== '');
+    const alignments = tableLines[1].split('|').map(s => s.trim()).filter(s => s !== '');
+    const rows = tableLines.slice(2).map(line => {
+      return line.split('|').map(s => s.trim()).filter((_, i, arr) => i > 0 && i < arr.length - 1);
+    });
+
+    return (
+      <div key={key} className="my-6 overflow-x-auto rounded-2xl border border-white/10 shadow-lg bg-[#141618]/60 backdrop-blur-sm">
+        <table className="min-w-full divide-y divide-white/10 text-[12px] text-left">
+          <thead className="bg-white/[0.02]">
+            <tr>
+              {headers.map((h, i) => {
+                let alignClass = "text-left";
+                if (alignments[i]?.includes(':---:')) alignClass = "text-center";
+                else if (alignments[i]?.endsWith(':')) alignClass = "text-right";
+                const title = h.replace(/\*\*/g, '');
+                return (
+                  <th key={i} className={`px-4 py-3.5 font-bold text-white/50 tracking-wider font-display ${alignClass}`}>
+                    {title}
+                  </th>
+                );
+              })}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-white/5 bg-transparent">
+            {rows.map((row, rIdx) => (
+              <tr key={rIdx} className="hover:bg-white/[0.01] transition-colors duration-150">
+                {row.map((cell, cIdx) => {
+                  let alignClass = "text-left";
+                  if (alignments[cIdx]?.includes(':---:')) alignClass = "text-center";
+                  else if (alignments[cIdx]?.endsWith(':')) alignClass = "text-right";
+
+                  return (
+                    <td key={cIdx} className={`px-4 py-3 text-white/80 font-medium whitespace-pre-wrap ${alignClass}`}>
+                      {cell.split("**").map((textPart, tIndex) => {
+                        // Eğer ilk sütun (komut), örnek veya özel bit alanlarıysa kod bloğu gibi gösterelim
+                        const isHighlight = (cIdx === 0 || cIdx === 1 || cIdx === 4 || cell.startsWith('0x') || cell.endsWith('h')) && tIndex % 2 === 1;
+                        if (isHighlight) {
+                          return (
+                            <code key={tIndex} className="bg-indigo-500/10 text-indigo-300 font-mono px-2 py-0.5 rounded border border-indigo-500/20 text-[11px]">
+                              {textPart}
+                            </code>
+                          );
+                        }
+                        return tIndex % 2 === 1 ? <strong key={tIndex} className="font-semibold text-white">{textPart}</strong> : textPart;
+                      })}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (line.startsWith('|')) {
+      flushParagraphs(`p-${i}`);
+      currentTableLines.push(lines[i]);
+    } else {
+      if (currentTableLines.length > 0) {
+        const table = parseTable(currentTableLines, `t-${i}`);
+        if (table) renderedElements.push(table);
+        currentTableLines = [];
+      }
+      paragraphAccumulator.push(lines[i]);
+    }
+  }
+
+  flushParagraphs(`p-end`);
+  if (currentTableLines.length > 0) {
+    const table = parseTable(currentTableLines, `t-end`);
+    if (table) renderedElements.push(table);
+  }
+
+  return renderedElements;
+};
+
 interface NotesReaderProps {
   onSelectWidget: (type: string) => void;
   completedChapters: number[];
@@ -184,31 +306,9 @@ export default function NotesReader({
                 {section.title.split(" ").slice(1).join(" ")}
               </h3>
 
-              {/* Formatting custom bullet points beautifully nested */}
-              <div className="whitespace-pre-line text-[13px] leading-relaxed text-white/70 space-y-2 prose-invert">
-                {section.content.split("\n\n").map((paragraph, pIdx) => {
-                  if (paragraph.startsWith("•")) {
-                    return (
-                      <ul key={pIdx} className="list-disc pl-5 space-y-1.5 my-2">
-                        {paragraph.split("\n").map((li, liIdx) => (
-                          <li key={liIdx} className="text-[13px] text-white/70">
-                            {/* Parse bold tags manually in paragraphs for safety */}
-                            {li.replace("•", "").trim().split("**").map((text, tIndex) => {
-                              return tIndex % 2 === 1 ? <strong key={tIndex} className="font-semibold text-white">{text}</strong> : text;
-                            })}
-                          </li>
-                        ))}
-                      </ul>
-                    );
-                  }
-                  return (
-                    <p key={pIdx} className="my-2">
-                      {paragraph.split("**").map((text, tIndex) => {
-                        return tIndex % 2 === 1 ? <strong key={tIndex} className="font-semibold text-white">{text}</strong> : text;
-                      })}
-                    </p>
-                  );
-                })}
+              {/* Formatting content, lists and tables dynamically */}
+              <div className="text-[13px] leading-relaxed text-white/70 space-y-2 prose-invert">
+                {renderContent(section.content)}
               </div>
 
               {/* Lab Trigger Quick Access */}
