@@ -53,9 +53,9 @@ const renderContent = (content: string) => {
     });
 
     return (
-      <div key={key} className="my-6 overflow-x-auto rounded-2xl border border-white/10 shadow-lg bg-[#141618]/60 backdrop-blur-sm">
+      <div key={key} className="my-6 overflow-x-auto rounded-2xl border border-white/10 shadow-lg bg-[#141618] backdrop-blur-sm">
         <table className="min-w-full divide-y divide-white/10 text-[12px] text-left">
-          <thead className="bg-white/[0.02]">
+          <thead className="bg-white/5">
             <tr>
               {headers.map((h, i) => {
                 let alignClass = "text-left";
@@ -72,7 +72,7 @@ const renderContent = (content: string) => {
           </thead>
           <tbody className="divide-y divide-white/5 bg-transparent">
             {rows.map((row, rIdx) => (
-              <tr key={rIdx} className="hover:bg-white/[0.01] transition-colors duration-150">
+              <tr key={rIdx} className="hover:bg-white/5 transition-colors duration-150">
                 {row.map((cell, cIdx) => {
                   let alignClass = "text-left";
                   if (alignments[cIdx]?.includes(':---:')) alignClass = "text-center";
@@ -85,7 +85,7 @@ const renderContent = (content: string) => {
                         const isHighlight = (cIdx === 0 || cIdx === 1 || cIdx === 4 || cell.startsWith('0x') || cell.endsWith('h')) && tIndex % 2 === 1;
                         if (isHighlight) {
                           return (
-                            <code key={tIndex} className="bg-indigo-500/10 text-indigo-300 font-mono px-2 py-0.5 rounded border border-indigo-500/20 text-[11px]">
+                            <code key={tIndex} className="bg-indigo-500/15 text-indigo-300 font-mono px-2 py-0.5 rounded border border-indigo-500/20 text-[11px]">
                               {textPart}
                             </code>
                           );
