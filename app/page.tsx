@@ -30,9 +30,15 @@ const updateURLParams = (tab: string, chapter: number, widget: string) => {
 };
 
 export default function Page() {
-  const [activeTab, setActiveTab] = useState<"notes" | "simulation" | "assessment">("notes");
-  const [activeWidget, setActiveWidget] = useState<string>("pinout");
-  const [selectedChapterId, setSelectedChapterId] = useState<number>(1);
+  const [activeTab, setActiveTab] = useState<"notes" | "simulation" | "assessment">(() => {
+    return getParamsFromURL().tab;
+  });
+  const [activeWidget, setActiveWidget] = useState<string>(() => {
+    return getParamsFromURL().widget;
+  });
+  const [selectedChapterId, setSelectedChapterId] = useState<number>(() => {
+    return getParamsFromURL().chapter;
+  });
   const [completedChapters, setCompletedChapters] = useState<number[]>([]);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -40,9 +46,6 @@ export default function Page() {
   // Sync state from URL params on load and set popstate listener
   useEffect(() => {
     const { tab, chapter, widget } = getParamsFromURL();
-    setActiveTab(tab);
-    setSelectedChapterId(chapter);
-    setActiveWidget(widget);
 
     // Write initial state to history so back button works correctly on first page load
     window.history.replaceState({ tab, chapter, widget }, "");
