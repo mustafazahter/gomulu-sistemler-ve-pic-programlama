@@ -128,17 +128,20 @@ const renderContent = (content: string) => {
 };
 
 interface NotesReaderProps {
+  selectedChapterId: number;
+  setSelectedChapterId: (id: number) => void;
   onSelectWidget: (type: string) => void;
   completedChapters: number[];
   toggleChapterComplete: (id: number) => void;
 }
 
 export default function NotesReader({
+  selectedChapterId,
+  setSelectedChapterId,
   onSelectWidget,
   completedChapters,
   toggleChapterComplete,
 }: NotesReaderProps) {
-  const [selectedChapterId, setSelectedChapterId] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [copiedCodeId, setCopiedCodeId] = useState<string | null>(null);
 

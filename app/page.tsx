@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from "motion/react";
 export default function Page() {
   const [activeTab, setActiveTab] = useState<"notes" | "simulation" | "assessment">("notes");
   const [activeWidget, setActiveWidget] = useState<string>("pinout");
+  const [selectedChapterId, setSelectedChapterId] = useState<number>(1);
   const [completedChapters, setCompletedChapters] = useState<number[]>([]);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -263,6 +264,8 @@ export default function Page() {
               transition={{ duration: 0.15 }}
             >
               <NotesReader
+                selectedChapterId={selectedChapterId}
+                setSelectedChapterId={setSelectedChapterId}
                 onSelectWidget={handleSelectWidget}
                 completedChapters={completedChapters}
                 toggleChapterComplete={toggleChapterComplete}
