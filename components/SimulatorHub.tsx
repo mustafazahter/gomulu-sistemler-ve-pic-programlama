@@ -18,20 +18,32 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
+const VALID_WIDGETS = ["pinout", "registers", "delay", "led-scroller", "seven-segment", "adc", "step-motor"];
+
 interface SimulatorHubProps {
   initialWidget?: string;
+  onWidgetChange?: (widget: string) => void;
 }
 
-export default function SimulatorHub({ initialWidget = "pinout" }: SimulatorHubProps) {
-  const [activeTab, setActiveTab] = useState<string>(initialWidget);
+export default function SimulatorHub({ initialWidget = "pinout", onWidgetChange }: SimulatorHubProps) {
+  const defaultTab = VALID_WIDGETS.includes(initialWidget) ? initialWidget : "pinout";
+  const [activeTab, setActiveTab] = useState<string>(defaultTab);
 
   useEffect(() => {
     if (initialWidget) {
       setTimeout(() => {
-        setActiveTab(initialWidget);
+        const targetTab = VALID_WIDGETS.includes(initialWidget) ? initialWidget : "pinout";
+        setActiveTab(targetTab);
       }, 0);
     }
   }, [initialWidget]);
+
+  const handleTabChangeLocal = (tabId: string) => {
+    setActiveTab(tabId);
+    if (onWidgetChange) {
+      onWidgetChange(tabId);
+    }
+  };
 
   // --- WIDGET 1: PIC Pinout & Registers ---
   const [selectedPin, setSelectedPin] = useState<number | null>(4);
@@ -305,7 +317,7 @@ INNER_LOOP
         ].map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
+            onClick={() => handleTabChangeLocal(tab.id)}
             className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2 whitespace-nowrap transition-all ${
               activeTab === tab.id
                 ? "bg-indigo-600 text-white shadow-sm"

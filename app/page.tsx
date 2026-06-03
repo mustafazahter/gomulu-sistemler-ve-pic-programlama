@@ -7,6 +7,28 @@ import SimulatorHub from "@/components/SimulatorHub";
 import StudyAssessment from "@/components/StudyAssessment";
 import { motion, AnimatePresence } from "motion/react";
 
+const getParamsFromURL = () => {
+  if (typeof window === "undefined") return { tab: "notes" as const, chapter: 1, widget: "pinout" };
+  const params = new URLSearchParams(window.location.search);
+  const tab = (params.get("tab") || "notes") as "notes" | "simulation" | "assessment";
+  const chapter = parseInt(params.get("chapter") || "1", 10);
+  const widget = params.get("widget") || "pinout";
+  return { tab, chapter, widget };
+};
+
+const updateURLParams = (tab: string, chapter: number, widget: string) => {
+  if (typeof window === "undefined") return;
+  const params = new URLSearchParams();
+  params.set("tab", tab);
+  if (tab === "notes") {
+    params.set("chapter", chapter.toString());
+  } else if (tab === "simulation") {
+    params.set("widget", widget);
+  }
+  const newRelativePathQuery = window.location.pathname + '?' + params.toString();
+  window.history.pushState({ tab, chapter, widget }, "", newRelativePathQuery);
+};
+
 export default function Page() {
   const [activeTab, setActiveTab] = useState<"notes" | "simulation" | "assessment">("notes");
   const [activeWidget, setActiveWidget] = useState<string>("pinout");
@@ -14,6 +36,36 @@ export default function Page() {
   const [completedChapters, setCompletedChapters] = useState<number[]>([]);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // Sync state from URL params on load and set popstate listener
+  useEffect(() => {
+    const { tab, chapter, widget } = getParamsFromURL();
+    setActiveTab(tab);
+    setSelectedChapterId(chapter);
+    setActiveWidget(widget);
+
+    // Write initial state to history so back button works correctly on first page load
+    window.history.replaceState({ tab, chapter, widget }, "");
+
+    const handlePopState = (event: PopStateEvent) => {
+      const state = event.state;
+      if (state) {
+        setActiveTab(state.tab || "notes");
+        setSelectedChapterId(state.chapter || 1);
+        setActiveWidget(state.widget || "pinout");
+      } else {
+        const parsed = getParamsFromURL();
+        setActiveTab(parsed.tab);
+        setSelectedChapterId(parsed.chapter);
+        setActiveWidget(parsed.widget);
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
 
   // Load saved theme and completion logs via localstorage securely
   useEffect(() => {
@@ -54,10 +106,26 @@ export default function Page() {
     localStorage.setItem("completed_chapters", JSON.stringify(updated));
   };
 
+  const handleTabChange = (tab: "notes" | "simulation" | "assessment") => {
+    setActiveTab(tab);
+    updateURLParams(tab, selectedChapterId, activeWidget);
+  };
+
+  const handleChapterChange = (id: number) => {
+    setSelectedChapterId(id);
+    updateURLParams(activeTab, id, activeWidget);
+  };
+
+  const handleWidgetChange = (widget: string) => {
+    setActiveWidget(widget);
+    updateURLParams(activeTab, selectedChapterId, widget);
+  };
+
   // Callback to focus active simulation directly from notes embedded triggers
   const handleSelectWidget = (type: string) => {
     setActiveWidget(type);
     setActiveTab("simulation");
+    updateURLParams("simulation", selectedChapterId, type);
   };
 
   return (
@@ -82,7 +150,7 @@ export default function Page() {
           {/* Navigation Controls tabs (Desktop only) */}
           <nav className="hidden md:flex bg-white/5 border border-white/10 rounded-2xl p-1 gap-1">
             <button
-              onClick={() => setActiveTab("notes")}
+              onClick={() => handleTabChange("notes")}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all outline-none whitespace-nowrap cursor-pointer ${
                 activeTab === "notes" ? "bg-indigo-600 text-white shadow-sm" : "text-white/60 hover:text-white hover:bg-white/5"
               }`}
@@ -91,7 +159,7 @@ export default function Page() {
               Notlar
             </button>
             <button
-              onClick={() => setActiveTab("simulation")}
+              onClick={() => handleTabChange("simulation")}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all outline-none whitespace-nowrap cursor-pointer ${
                 activeTab === "simulation" ? "bg-indigo-600 text-white shadow-sm" : "text-white/60 hover:text-white hover:bg-white/5"
               }`}
@@ -100,7 +168,7 @@ export default function Page() {
               Simülasyon
             </button>
             <button
-              onClick={() => setActiveTab("assessment")}
+              onClick={() => handleTabChange("assessment")}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all outline-none whitespace-nowrap cursor-pointer ${
                 activeTab === "assessment" ? "bg-indigo-600 text-white shadow-sm" : "text-white/60 hover:text-white hover:bg-white/5"
               }`}
@@ -179,7 +247,7 @@ export default function Page() {
                 <div className="flex flex-col gap-2">
                   <button
                     onClick={() => {
-                      setActiveTab("notes");
+                      handleTabChange("notes");
                       setIsMenuOpen(false);
                     }}
                     className={`w-full px-4 py-3 rounded-xl text-xs font-bold flex items-center justify-between transition-all outline-none cursor-pointer ${
@@ -197,7 +265,7 @@ export default function Page() {
 
                   <button
                     onClick={() => {
-                      setActiveTab("simulation");
+                      handleTabChange("simulation");
                       setIsMenuOpen(false);
                     }}
                     className={`w-full px-4 py-3 rounded-xl text-xs font-bold flex items-center justify-between transition-all outline-none cursor-pointer ${
@@ -215,7 +283,7 @@ export default function Page() {
 
                   <button
                     onClick={() => {
-                      setActiveTab("assessment");
+                      handleTabChange("assessment");
                       setIsMenuOpen(false);
                     }}
                     className={`w-full px-4 py-3 rounded-xl text-xs font-bold flex items-center justify-between transition-all outline-none cursor-pointer ${
@@ -265,7 +333,7 @@ export default function Page() {
             >
               <NotesReader
                 selectedChapterId={selectedChapterId}
-                setSelectedChapterId={setSelectedChapterId}
+                setSelectedChapterId={handleChapterChange}
                 onSelectWidget={handleSelectWidget}
                 completedChapters={completedChapters}
                 toggleChapterComplete={toggleChapterComplete}
@@ -282,7 +350,7 @@ export default function Page() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
             >
-              <SimulatorHub initialWidget={activeWidget} />
+              <SimulatorHub initialWidget={activeWidget} onWidgetChange={handleWidgetChange} />
             </motion.div>
           )}
 
