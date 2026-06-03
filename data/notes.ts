@@ -281,9 +281,9 @@ INIT
     bcf STATUS, 5   ; Bank 0'a geç.
 
 DONGU
-    btfsc PORTA, 1  ; PORTA,1 basıldı mı? (Lojik 0 mı?)
-    goto LED_YAK    ; Hayır, butona basılmadıysa (1 ise) LED_YAK etiketine git
-    goto LED_SONDUR ; Evet, butona basıldıysa (0 ise) LED_SONDUR'e git.
+    btfss PORTA, 1  ; PORTA,1 lojik 1 mi? (Butona basılmadıysa skip et)
+    goto LED_YAK    ; Hayır, lojik 0 ise (butona basıldıysa) LED_YAK etiketine git
+    goto LED_SONDUR ; Evet, lojik 1 ise (butona basılmadıysa) LED_SONDUR'e git.
 
 LED_YAK
     bsf PORTB, 0    ; LED'i yak.
@@ -317,8 +317,9 @@ MAIN
     goto MAIN       ; Basılmadıysa döngüde bekle.
 
     ; Buton arkı engelleme ve el çekme testi
+EL_CEK_BEKLE
     btfsc PORTB, 1  ; El çekildi mi?
-    goto $-1        ; El çekilene kadar bekle.
+    goto EL_CEK_BEKLE ; El çekilene kadar bekle.
 
     ; LED Durumunu Tersle (XOR mantığı ile)
     movlw b'00000001'

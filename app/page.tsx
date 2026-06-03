@@ -195,9 +195,9 @@ export default function Page() {
 
             {/* Progress counter (desktop/tablet) */}
             <div className="hidden sm:flex items-center gap-3">
-              <div className="h-2 w-14 lg:w-16 bg-white/10 rounded-full overflow-hidden border border-white/10">
+              <div className="h-2 w-14 lg:w-16 bg-white/10 rounded-full overflow-hidden border border-white/10 progress-track">
                 <div
-                  className="bg-indigo-505 h-full rounded-full transition-all duration-300"
+                  className="bg-indigo-600 h-full rounded-full transition-all duration-300 progress-fill"
                   style={{ width: `${(completedChapters.length / 12) * 100}%` }}
                 />
               </div>
@@ -309,9 +309,9 @@ export default function Page() {
                     <span>Eğitim İlerleme Oranı</span>
                     <span className="font-mono text-xs text-white">{Math.round((completedChapters.length / 12) * 100)}%</span>
                   </div>
-                  <div className="h-2.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/10 p-0.5">
+                  <div className="h-2.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/10 p-0.5 progress-track">
                     <div
-                      className="bg-indigo-505 h-full rounded-full transition-all duration-300"
+                      className="bg-indigo-600 h-full rounded-full transition-all duration-300 progress-fill"
                       style={{ width: `${(completedChapters.length / 12) * 100}%` }}
                     />
                   </div>

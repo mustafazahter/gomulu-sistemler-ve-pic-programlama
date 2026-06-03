@@ -384,5 +384,25 @@
   color: #312E81 !important; /* Rich deep indigo-900 in light mode */
 }
 
+/* Progress Bar Styles */
+.progress-track {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.progress-fill {
+  background-color: #6366f1 !important; /* Indigo-500 for dark mode */
+}
+
+/* Light Theme Progress Bar overrides */
+.light .progress-track {
+  background-color: rgba(0, 0, 0, 0.08) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+.light .progress-fill {
+  background-color: #4f46e5 !important; /* Indigo-600 for light mode */
+}
+
 
 
