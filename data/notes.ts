@@ -369,6 +369,19 @@ BH  EQU 0x12
 BL  EQU 0x13
 
 ORG 0x00
+    ; Başlangıç Değerleri (Decimal olarak)
+    ; Sayı 1 = 500 (AH:AL = d'1':d'244')
+    movlw d'1'
+    movwf AH
+    movlw d'244'
+    movwf AL
+
+    ; Sayı 2 = 300 (BH:BL = d'1':d'44')
+    movlw d'1'
+    movwf BH
+    movlw d'44'
+    movwf BL
+
     bcf STATUS, C   ; Carry temizle.
 
     ; Düşük anlamlı byte'ları topla
@@ -377,7 +390,7 @@ ORG 0x00
 
     ; Taşma kontrolü (Carry test)
     btfsc STATUS, C ; Carry oluştu mu?
-    incf  BH, F     ; Evet oluştuysa, BH (Sayı2 Yüksek byte) 1 artır.
+    incf  AH, F     ; Evet oluştuysa, AH (Sayı1 Yüksek byte) 1 artır.
 
     ; Yüksek anlamlı byte'ları topla
     movf  BH, W
@@ -398,7 +411,20 @@ BH  EQU 0x12
 BL  EQU 0x13
 
 ORG 0x00
-    bcf STATUS, C   ; Eldeyi sıfırla.
+    ; Başlangıç Değerleri (Decimal olarak)
+    ; Sayı 1 = 500 (AH:AL = d'1':d'244')
+    movlw d'1'
+    movwf AH
+    movlw d'244'
+    movwf AL
+
+    ; Sayı 2 = 300 (BH:BL = d'1':d'44')
+    movlw d'1'
+    movwf BH
+    movlw d'44'
+    movwf BL
+
+    bsf STATUS, C   ; Çıkarma öncesi Carry (borrow) bitini 1 yap.
 
     ; Düşük anlamlı byte'ların çıkarılması
     movf  BL, W
@@ -406,7 +432,7 @@ ORG 0x00
 
     ; Borç kontrolü (Çıkarma işleminde Borç varsa C=0 olur)
     btfss STATUS, C ; C=1 ise borç yoktur, atla.
-    decf  BH, F     ; C=0 ise borç vardır, BH'ı 1 azalt.
+    decf  AH, F     ; C=0 ise borç vardır, AH'ı 1 azalt.
 
     ; Yüksek anlamlı byte'ların çıkarılması
     movf  BH, W
